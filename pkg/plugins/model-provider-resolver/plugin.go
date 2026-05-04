@@ -179,6 +179,7 @@ func (p *ModelProviderResolverPlugin) ProcessRequest(ctx context.Context, cycleS
 	cycleState.Write(state.ProviderKey, ref.provider)
 	cycleState.Write(state.ModelKey, ref.targetModel)
 	cycleState.Write(state.APIFormatKey, ref.apiFormat)
+	cycleState.Write(state.EndpointKey, ref.endpoint)
 	cycleState.Write(state.CredsRefName, ref.secretName)
 	cycleState.Write(state.CredsRefNamespace, ref.secretNamespace)
 	cycleState.Write(state.ModelConfigKey, ref.config)

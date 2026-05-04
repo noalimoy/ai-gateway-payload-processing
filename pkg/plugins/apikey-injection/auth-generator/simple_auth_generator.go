@@ -18,6 +18,8 @@ package authgenerator
 
 import (
 	"fmt"
+
+	"sigs.k8s.io/gateway-api-inference-extension/pkg/bbr/framework"
 )
 
 // apiKeyField is the field name in the credentials map that holds the API key.
@@ -33,6 +35,11 @@ var _ AuthHeadersGenerator = &SimpleAuthGenerator{}
 type SimpleAuthGenerator struct {
 	HeaderName        string
 	HeaderValuePrefix string
+}
+
+// ExtractRequestData is a no-op for SimpleAuthGenerator — API key auth doesn't need request data.
+func (g *SimpleAuthGenerator) ExtractRequestData(_ *framework.CycleState, _ *framework.InferenceRequest) (map[string]string, error) {
+	return nil, nil
 }
 
 // GenerateAuthHeaders extracts the "api-key" field from credentials and returns

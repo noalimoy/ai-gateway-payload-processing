@@ -70,6 +70,8 @@ func NewAPIKeyInjectionPlugin(reconcilerBuilder func() *builder.Builder, clientR
 			Type: APIKeyInjectionPluginType,
 			Name: APIKeyInjectionPluginType,
 		},
+		// TODO(#310): Replace static provider→generator mapping with dynamic selection
+		// based on ExternalProvider.spec.auth.type once reconciler wiring lands.
 		authHeadersGenerators: map[string]authgenerator.AuthHeadersGenerator{
 			provider.OpenAI:      &authgenerator.SimpleAuthGenerator{HeaderName: "Authorization", HeaderValuePrefix: "Bearer "},
 			provider.Anthropic:   &authgenerator.SimpleAuthGenerator{HeaderName: "x-api-key"},
@@ -78,6 +80,7 @@ func NewAPIKeyInjectionPlugin(reconcilerBuilder func() *builder.Builder, clientR
 			// provider.Vertex:     &auth.SimpleAuthGenerator{HeaderName: "Authorization", HeaderValuePrefix: "Bearer "},
 			provider.VertexOpenAI:  &authgenerator.SimpleAuthGenerator{HeaderName: "Authorization", HeaderValuePrefix: "Bearer "},
 			provider.BedrockOpenAI: &authgenerator.SimpleAuthGenerator{HeaderName: "Authorization", HeaderValuePrefix: "Bearer "},
+			provider.AWSBedrock:    &authgenerator.SigV4AuthGenerator{},
 		},
 		store: store,
 	}), nil
@@ -136,6 +139,21 @@ func (p *ApiKeyInjectionPlugin) ProcessRequest(ctx context.Context, cycleState *
 	if !ok {
 		logger.Error(nil, "unsupported provider for auth generation", "provider", providerName)
 		return errcommon.Error{Code: errcommon.Internal, Msg: fmt.Sprintf("unsupported provider - '%s'", providerName)}
+	}
+
+	extraData, err := generator.ExtractRequestData(cycleState, request)
+	if err != nil {
+		return errcommon.Error{Code: errcommon.Internal, Msg: fmt.Sprintf("failed to extract request data for provider '%s': %v", providerName, err)}
+	}
+	if len(extraData) > 0 {
+		merged := make(map[string]string, len(credentials)+len(extraData))
+		for k, v := range credentials {
+			merged[k] = v
+		}
+		for k, v := range extraData {
+			merged[k] = v
+		}
+		credentials = merged
 	}
 
 	authHeaders, err := generator.GenerateAuthHeaders(credentials)

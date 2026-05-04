@@ -36,6 +36,7 @@ func TestProcessRequest_ModelResolved(t *testing.T) {
 		extName     = "claude-sonnet"
 		targetModel = "claude-sonnet-1234"
 		credName    = "anthropic-key"
+		endpoint    = "api.anthropic.com"
 	)
 	store.addOrUpdateModel(
 		types.NamespacedName{Namespace: extNS, Name: extName},
@@ -43,6 +44,7 @@ func TestProcessRequest_ModelResolved(t *testing.T) {
 			provider:        provider.Anthropic,
 			targetModel:     targetModel,
 			apiFormat:       apiformat.Messages,
+			endpoint:        endpoint,
 			secretName:      credName,
 			secretNamespace: extNS,
 			config:          map[string]string{},
@@ -78,6 +80,10 @@ func TestProcessRequest_ModelResolved(t *testing.T) {
 	actualAPIFormat, err := framework.ReadCycleStateKey[apiformat.APIFormat](cs, state.APIFormatKey)
 	require.NoError(t, err)
 	require.Equal(t, apiformat.Messages, actualAPIFormat)
+
+	actualEndpoint, err := framework.ReadCycleStateKey[string](cs, state.EndpointKey)
+	require.NoError(t, err)
+	require.Equal(t, endpoint, actualEndpoint)
 }
 
 func TestProcessRequest_ModelMismatch(t *testing.T) {

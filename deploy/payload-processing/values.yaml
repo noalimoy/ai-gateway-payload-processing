@@ -27,6 +27,8 @@ upstreamBbr:
         name: model-provider-resolver
       - type: api-translation
         name: api-translation
+      # Ordering: apikey-injection must be last. SigV4 signs request.Body —
+      # do not add body-mutating plugins after this point.
       - type: apikey-injection
         name: apikey-injection
 

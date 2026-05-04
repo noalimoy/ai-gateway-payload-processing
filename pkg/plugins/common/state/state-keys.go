@@ -25,4 +25,5 @@ const (
 	ModelConfigKey    = "model-config"
 	APIFormatKey      = "api-format"
 	InputAPIFormatKey = "input-api-format"
+	EndpointKey       = "endpoint"
 )

@@ -37,6 +37,7 @@ type resolvedProviderRef struct {
 	provider        string
 	targetModel     string
 	apiFormat       apiformat.APIFormat
+	endpoint        string
 	secretName      string
 	secretNamespace string
 	config          map[string]string
