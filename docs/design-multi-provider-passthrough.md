@@ -39,7 +39,8 @@ The input format is detected from the request path suffix. This mapping is gener
 | `/v1/chat/completions` | `openai-chat` | OpenAI Chat Completions |
 | `/v1/messages` | `messages` | Anthropic Messages |
 | `/v1/responses` | `openai-responses` | OpenAI Responses |
-| `/v1/embeddings` | `embeddings` | Embeddings (any provider) |
+
+Adding new formats (e.g., `/v1/embeddings` → `embeddings`) requires only a new case in `detectInputAPIFormat()` — no changes needed in `isPassthrough()` or api-translation.
 
 The output format comes from `ExternalProviderRef.apiFormat` on the ExternalModel CR, or is derived from the legacy provider name:
 
