@@ -14,16 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package provider
+package auth
+
+type Auth string
 
 const (
-	OpenAI    = "openai"
-	Anthropic = "anthropic"
-	Azure     = "azure"
-	Vertex    = "vertex"
-	Bedrock   = "bedrock"
-	// to be removed after migrating the api translation + apikey injection plugins mapping
-	AzureOpenAI   = "azure-openai"
-	VertexOpenAI  = "vertex-openai"
-	BedrockOpenAI = "bedrock-openai"
+	Simple Auth = "simple"
+	SigV4  Auth = "sigv4"  // not used yet
+	OAuth2 Auth = "oauth2" // not used yet
 )

@@ -14,16 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package provider
+package authgenerator
 
-const (
-	OpenAI    = "openai"
-	Anthropic = "anthropic"
-	Azure     = "azure"
-	Vertex    = "vertex"
-	Bedrock   = "bedrock"
-	// to be removed after migrating the api translation + apikey injection plugins mapping
-	AzureOpenAI   = "azure-openai"
-	VertexOpenAI  = "vertex-openai"
-	BedrockOpenAI = "bedrock-openai"
-)
+// AuthHeadersGenerator generates auth headers from credential fields.
+// Each implementation defines which fields it requires from the credentials map.
+type AuthHeadersGenerator interface {
+	GenerateAuthHeaders(credentialsData map[string]string) (map[string]string, error)
+}
